@@ -1,4 +1,3 @@
-// DOM elements
 var newBtn = document.getElementById('newTaskBtn');
 var addPopup = document.getElementById('itemPopup');
 var removePopup = document.getElementById('deletePopup');
@@ -15,208 +14,152 @@ var cancelDelBtn = document.getElementById('cancelDelete');
 var confirmDelBtn = document.getElementById('confirmDelete');
 var closeXBtns = document.querySelectorAll('.close_x');
 
-
 var todoItems = [];
 var activeItemId = null;
 
-UUUU
-window.onload = function() {
+function initializeApp() {
     var stored = localStorage.getItem('stored_todos');
     if (stored) {
         todoItems = JSON.parse(stored);
-        refreshItems();
+        updateTaskList();
     }
-    checkEmpty();
-};
-
-
-function checkEmpty() {
-    if (todoItems.length === 0) {
-        emptyMessage.style.display = 'flex';
-    } else {
-        emptyMessage.style.display = 'none';
-    }
+    toggleEmptyMessage();
 }
 
+function toggleEmptyMessage() {
+    emptyMessage.style.display = todoItems.length === 0 ? 'flex' : 'none';
+}
 
-function saveToStorage() {
+function saveTasks() {
     localStorage.setItem('stored_todos', JSON.stringify(todoItems));
 }
 
-function createItemElement(todo) {
+function createTaskElement(task) {
     var div = document.createElement('div');
     div.className = 'todo_item';
-    div.setAttribute('data-id', todo.id);
+    div.setAttribute('data-id', task.id);
     
-    var content = '';
-    content += '<div class="item_text">' + todo.text + '</div>';
-    content += '<div class="item_btns">';
-    content += '    <button class="edit_btn"><i class="fas fa-edit"></i></button>';
-    content += '    <button class="remove_btn"><i class="fas fa-trash"></i></button>';
-    content += '</div>';
+    div.innerHTML = `
+        <div class="item_text">${task.text}</div>
+        <div class="item_btns">
+            <button class="edit_btn"><i class="fas fa-edit"></i></button>
+            <button class="remove_btn"><i class="fas fa-trash"></i></button>
+        </div>
+    `;
     
-    div.innerHTML = content;
-    
-    
-    div.querySelector('.edit_btn').onclick = function() {
-        openEditForm(todo);
-    };
-    
-    div.querySelector('.remove_btn').onclick = function() {
-        openDeleteForm(todo.id);
-    };
+    div.querySelector('.edit_btn').onclick = () => showEditForm(task);
+    div.querySelector('.remove_btn').onclick = () => showDeleteForm(task.id);
     
     return div;
 }
 
+function updateTaskList() {
+    var existingItems = todoList.querySelectorAll('.todo_item');
+    existingItems.forEach(item => item.remove());
 
-function refreshItems() {
+    todoItems.forEach(task => {
+        todoList.appendChild(createTaskElement(task));
+    });
     
-    var oldItems = document.querySelectorAll('.todo_item');
-    for (var i = 0; i < oldItems.length; i++) {
-        oldItems[i].remove();
-    }
-    
-
-    for (var j = 0; j < todoItems.length; j++) {
-        var itemElement = createItemElement(todoItems[j]);
-        todoList.appendChild(itemElement);
-    }
-    
-    checkEmpty();
+    toggleEmptyMessage();
 }
 
-
-function addNewItem() {
-    var text = todoInput.value.trim();
-    if (!text) return; 
-    
-  
-    var newItem = {
-        id: '' + new Date().getTime(),
-        text: text
-    };
-    
-    
-    todoItems.unshift(newItem);
-    saveToStorage();
-    refreshItems();
-}
-
-
-function updateItem() {
+function addTask() {
     var text = todoInput.value.trim();
     if (!text) return;
     
-    for (var i = 0; i < todoItems.length; i++) {
-        if (todoItems[i].id == activeItemId) {
-            todoItems[i].text = text;
-            break;
-        }
-    }
+    var newTask = {
+        id: Date.now().toString(),
+        text: text
+    };
     
-    saveToStorage();
-    refreshItems();
+    todoItems.unshift(newTask);
+    saveTasks();
+    updateTaskList();
+    todoInput.value = '';
 }
 
-
-function deleteItem() {
+function editTask() {
+    var text = todoInput.value.trim();
+    if (!text) return;
     
-    var newList = [];
-    for (var i = 0; i < todoItems.length; i++) {
-        if (todoItems[i].id != activeItemId) {
-            newList.push(todoItems[i]);
-        }
+    var task = todoItems.find(item => item.id == activeItemId);
+    if (task) {
+        task.text = text;
+        saveTasks();
+        updateTaskList();
     }
-    todoItems = newList;
-    
-    saveToStorage();
-    refreshItems();
 }
 
+function removeTask() {
+    todoItems = todoItems.filter(item => item.id != activeItemId);
+    saveTasks();
+    updateTaskList();
+}
 
-function openAddForm() {
-    // Reset form
+function showAddForm() {
     todoForm.reset();
     activeItemId = null;
-    
-    
     popupHeader.textContent = 'Add New Task';
     addBtns.style.display = 'block';
     editBtns.style.display = 'none';
-    
-  
     addPopup.style.display = 'block';
     todoInput.focus();
 }
 
-
-function openEditForm(item) {
-    // Load data
-    todoInput.value = item.text;
-    activeItemId = item.id;
-    
-
+function showEditForm(task) {
+    todoInput.value = task.text;
+    activeItemId = task.id;
     popupHeader.textContent = 'Edit Task';
     addBtns.style.display = 'none';
     editBtns.style.display = 'flex';
-    
-    // Show popup
     addPopup.style.display = 'block';
     todoInput.focus();
 }
 
-function openDeleteForm(id) {
+function showDeleteForm(id) {
     activeItemId = id;
     removePopup.style.display = 'block';
 }
 
-
-function closePopups() {
+function hidePopups() {
     addPopup.style.display = 'none';
     removePopup.style.display = 'none';
 }
 
-
-newBtn.onclick = openAddForm;
-cancelEditBtn.onclick = closePopups;
-cancelDelBtn.onclick = closePopups;
+newBtn.onclick = showAddForm;
+cancelEditBtn.onclick = hidePopups;
+cancelDelBtn.onclick = hidePopups;
 
 confirmDelBtn.onclick = function() {
-    deleteItem();
-    closePopups();
+    removeTask();
+    hidePopups();
 };
 
+closeXBtns.forEach(btn => {
+    btn.onclick = hidePopups;
+});
 
-for (var i = 0; i < closeXBtns.length; i++) {
-    closeXBtns[i].onclick = closePopups;
-}
-
-
-todoForm.onsubmit = function(e) {
+todoForm.addEventListener('submit', function(e) {
     e.preventDefault();
-    
     if (activeItemId) {
-        
-        updateItem();
+        editTask();
     } else {
-        
-        addNewItem();
+        addTask();
     }
-    
-    closePopups();
-};
-
+    hidePopups();
+});
 
 window.onclick = function(e) {
     if (e.target == addPopup || e.target == removePopup) {
-        closePopups();
+        hidePopups();
     }
 };
-
 
 document.onkeydown = function(e) {
     if (e.key == 'Escape') {
-        closePopups();
+        hidePopups();
     }
 };
+
+window.onload = initializeApp;

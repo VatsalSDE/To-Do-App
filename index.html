@@ -9,7 +9,6 @@
 </head>
 <body>
     <div class="app_wrap">
-        
         <div class="top_bar">
             <h1 class="app_title">My Tasks</h1>
             <button id="newTaskBtn" class="add_btn">
@@ -17,26 +16,16 @@
             </button>
         </div>
 
-        
         <div class="list_area">
             <div id="itemsList" class="items_box">
-                <!-- Empty message -->
                 <div class="no_items" id="emptyMsg">
-                    <img src="https://via.placeholder.com/120" alt="No tasks" class="empty_img">
+                    <p>No tasks</p>
                     <p>You don't have any tasks yet. Add one!</p>
                 </div>
-                
-                
             </div>
-        </div>
-
-        
-        <div class="bottom_bar">
-            <p>&copy; 2025 Task Organizer. All rights reserved.</p>
         </div>
     </div>
 
-    
     <div id="itemPopup" class="overlay_popup">
         <div class="popup_box">
             <div class="popup_top">
@@ -46,7 +35,7 @@
             <div class="popup_content">
                 <form id="itemForm">
                     <div class="input_group">
-                        <label for="itemText">Task Description</label>
+                        <label for="ite~mText">Task Description</label>
                         <input type="text" id="itemText" placeholder="What needs to be done?">
                     </div>
                     <div class="btn_row" id="addButtons">
@@ -61,7 +50,6 @@
         </div>
     </div>
 
-    
     <div id="deletePopup" class="overlay_popup">
         <div class="popup_box delete_box">
             <div class="popup_top">
