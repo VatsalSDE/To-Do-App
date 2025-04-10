@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vatsal's Task Organizer</title>
+    <link rel="stylesheet" href="todo.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="app_wrap">
+        <!-- Top area -->
+        <div class="top_bar">
+            <h1 class="app_title">Vatsal's Tasks</h1>
+            <button id="newTaskBtn" class="add_btn">
+                <i class="tskk"></i> New Task
+            </button>
+            <div id="taskCounter" class="task-counter">0 tasks</div>
+        </div>
+
+        <!-- List area -->
+        <div class="list_area">
+            <div id="itemsList" class="items_box">
+                <!-- Empty message -->
+                <div class="no_items" id="emptyMsg">
+                    <img alt="No tasks" class="empty_img">
+                    <p>No tasks yet! Click "New Task" to get started.</p>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit popup -->
+    <div id="itemPopup" class="overlay_popup">
+        <div class="popup_box">
+            <div class="popup_top">
+                <h2 id="popupTitle">Add New Task</h2>
+                <span class="close_x" title="Close">&times;</span>
+            </div>
+            <div class="popup_content">
+                <form id="itemForm">
+                    <div class="input_group">
+                        <label for="itemText">What's the task</label>
+                        <input type="text" id="itemText" placeholder="e.g DSA">
+                    </div>
+                    <div class="btn_row" id="addButtons">
+                        <button type="submit" class="submit_btn">Add</button>
+                    </div>
+                    <div class="btn_row" id="editButtons" style="display: none;">
+                        <button type="button" class="cancel_btn" id="cancelEdit">Cancel</button>
+                        <button type="submit" class="update_btn">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete popup -->
+    <div id="deletePopup" class="overlay_popup">
+        <div class="popup_box delete_box">
+            <div class="popup_top">
+                <h2>Confirm Delete</h2>
+                <span class="close_x" title="Close">&times;</span>
+            </div>
+            <div class="popup_content">
+                <p>This task will be permanently deleted. Are you sure?</p>
+                <div class="btn_row">
+                    <button class="cancel_btn" id="cancelDelete">Cancel</button>
+                    <button class="delete_btn" id="confirmDelete">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="todo.js"></script>
+</body>
+</html>
