@@ -1,18 +1,27 @@
 // DOM elements
 var newBtn = document.getElementById('newTaskBtn');
-var todoList = document.getElementById('itemsList');
-var emptyMessage = document.getElementById('emptyMsg');
-var taskCounter = document.getElementById('taskCounter');
-
 var addPopup = document.getElementById('itemPopup');
 var removePopup = document.getElementById('deletePopup');
 var todoForm = document.getElementById('itemForm');
 var todoInput = document.getElementById('itemText');
-// Store tasks
+var todoList = document.getElementById('itemsList');
+var emptyMessage = document.getElementById('emptyMsg');
+
+
+
+var popupHeader = document.getElementById('popupTitle');
+var addBtns = document.getElementById('addButtons');
+var editBtns = document.getElementById('editButtons');
+var cancelEditBtn = document.getElementById('cancelEdit');
+var cancelDelBtn = document.getElementById('cancelDelete');
+var confirmDelBtn = document.getElementById('confirmDelete');
+var closeXBtns = document.querySelectorAll('.close_x');
+
+
 var todoItems = [];
 var activeItemId = null;
 
-// Load saved items
+
 window.onload = function() {
     var stored = localStorage.getItem('stored_todos');
     if (stored) {
@@ -20,14 +29,9 @@ window.onload = function() {
         refreshItems();
     }
     checkEmpty();
-    updateCounter();
 };
-function updateCounter() {
-    var count = todoItems.length;
-    taskCounter.textContent = count + (count === 1 ? " task" : " tasks");
-}
 
-// Show or hide empty message
+
 function checkEmpty() {
     if (todoItems.length === 0) {
         emptyMessage.style.display = 'flex';
@@ -36,12 +40,11 @@ function checkEmpty() {
     }
 }
 
-// Save to storage
+
 function saveToStorage() {
     localStorage.setItem('stored_todos', JSON.stringify(todoItems));
 }
 
-// Create a new todo item element
 function createItemElement(todo) {
     var div = document.createElement('div');
     div.className = 'todo_item';
@@ -56,7 +59,7 @@ function createItemElement(todo) {
     
     div.innerHTML = content;
     
-    // Add event listeners
+    
     div.querySelector('.edit_btn').onclick = function() {
         openEditForm(todo);
     };
@@ -68,15 +71,15 @@ function createItemElement(todo) {
     return div;
 }
 
-// Refresh all items in the list
+
 function refreshItems() {
-    // Clear items except empty message
+    
     var oldItems = document.querySelectorAll('.todo_item');
     for (var i = 0; i < oldItems.length; i++) {
         oldItems[i].remove();
     }
     
-    // Add all items
+
     for (var j = 0; j < todoItems.length; j++) {
         var itemElement = createItemElement(todoItems[j]);
         todoList.appendChild(itemElement);
@@ -85,24 +88,24 @@ function refreshItems() {
     checkEmpty();
 }
 
-// Add a new todo item
+
 function addNewItem() {
     var text = todoInput.value.trim();
-    if (!text) return; // Don't add empty items
+    if (!text) return; 
     
-    // Create new item with unique ID
+  
     var newItem = {
         id: '' + new Date().getTime(),
         text: text
     };
     
-    // Add to beginning of array
+    
     todoItems.unshift(newItem);
     saveToStorage();
     refreshItems();
 }
 
-// Update existing item
+
 function updateItem() {
     var text = todoInput.value.trim();
     if (!text) return;
@@ -118,9 +121,9 @@ function updateItem() {
     refreshItems();
 }
 
-// Delete an item
+
 function deleteItem() {
-    // Filter out the item with activeItemId
+    
     var newList = [];
     for (var i = 0; i < todoItems.length; i++) {
         if (todoItems[i].id != activeItemId) {
@@ -133,29 +136,29 @@ function deleteItem() {
     refreshItems();
 }
 
-// Open the create item form
+
 function openAddForm() {
     // Reset form
     todoForm.reset();
     activeItemId = null;
     
-    // Set up for create mode
+    
     popupHeader.textContent = 'Add New Task';
     addBtns.style.display = 'block';
     editBtns.style.display = 'none';
     
-    // Show popup
+  
     addPopup.style.display = 'block';
     todoInput.focus();
 }
 
-// Open the edit item form
+
 function openEditForm(item) {
     // Load data
     todoInput.value = item.text;
     activeItemId = item.id;
     
-    // Set up for edit mode
+
     popupHeader.textContent = 'Edit Task';
     addBtns.style.display = 'none';
     editBtns.style.display = 'flex';
@@ -165,19 +168,18 @@ function openEditForm(item) {
     todoInput.focus();
 }
 
-// Open delete confirmation
 function openDeleteForm(id) {
     activeItemId = id;
     removePopup.style.display = 'block';
 }
 
-// Close all popups
+
 function closePopups() {
     addPopup.style.display = 'none';
     removePopup.style.display = 'none';
 }
 
-// Event handlers
+
 newBtn.onclick = openAddForm;
 cancelEditBtn.onclick = closePopups;
 cancelDelBtn.onclick = closePopups;
@@ -187,34 +189,34 @@ confirmDelBtn.onclick = function() {
     closePopups();
 };
 
-// Close X buttons
+
 for (var i = 0; i < closeXBtns.length; i++) {
     closeXBtns[i].onclick = closePopups;
 }
 
-// Form submission
+
 todoForm.onsubmit = function(e) {
     e.preventDefault();
     
     if (activeItemId) {
-        // Update existing item
+        
         updateItem();
     } else {
-        // Add new item
+        
         addNewItem();
     }
     
     closePopups();
 };
 
-// Close popups when clicking outside
+
 window.onclick = function(e) {
     if (e.target == addPopup || e.target == removePopup) {
         closePopups();
     }
 };
 
-// Close popups with escape key
+
 document.onkeydown = function(e) {
     if (e.key == 'Escape') {
         closePopups();
