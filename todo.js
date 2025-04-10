@@ -7,8 +7,6 @@ var todoInput = document.getElementById('itemText');
 var todoList = document.getElementById('itemsList');
 var emptyMessage = document.getElementById('emptyMsg');
 
-
-
 var popupHeader = document.getElementById('popupTitle');
 var addBtns = document.getElementById('addButtons');
 var editBtns = document.getElementById('editButtons');
@@ -21,7 +19,7 @@ var closeXBtns = document.querySelectorAll('.close_x');
 var todoItems = [];
 var activeItemId = null;
 
-
+UUUU
 window.onload = function() {
     var stored = localStorage.getItem('stored_todos');
     if (stored) {
